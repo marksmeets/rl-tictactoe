@@ -20,13 +20,10 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * Created by mark on 27-10-16.
@@ -82,7 +79,7 @@ public class QNNOneHot implements QFunction
     _batchSize = Math.min(_batchSize, _replayMemorySize);
   }
 
-  public void update(double alpha_, double delta_, ElligibilityTraces et_)
+  public void update(double alpha_, double delta_, EligibilityTraces et_)
   {
     for (Iterator<Pair<State,Action>> i = et_.getIterator(); i.hasNext(); )
     {

@@ -14,7 +14,7 @@ public class SarsaLambda extends AbstractLearner
   transient public static final Logger _log = Logger.getLogger(SarsaLambda.class);
 
   QTable _QTable = new QTable();
-  ElligibilityTraces _ET = new ElligibilityTraces();
+  EligibilityTraces _ET = new EligibilityTraces();
   double _gamma = 0.9;
   double _alpha = 0.5;
   double _lambda = 0.5;

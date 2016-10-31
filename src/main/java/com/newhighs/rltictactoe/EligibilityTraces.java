@@ -13,9 +13,9 @@ import java.util.Map;
 /**
  * Created by mark on 25-10-16.
  */
-public class ElligibilityTraces
+public class EligibilityTraces
 {
-  transient public static final Logger _log = Logger.getLogger(ElligibilityTraces.class);
+  transient public static final Logger _log = Logger.getLogger(EligibilityTraces.class);
 
   // map from State x Action -> Double. State and Action are encoded as Strings
   private Map<String, Map<String, Double>> _eMap = new HashMap<>();
@@ -78,7 +78,7 @@ public class ElligibilityTraces
     _traces.clear();
   }
 
-  // either use inc or set1 to update the elligibility traces.
+  // either use inc or set1 to update the eligibility traces.
   public void inc(State s_, Action a_)
   {
     _traces.add(new ImmutablePair<State, Action>(s_, a_));

@@ -14,7 +14,7 @@ public class QLambda extends AbstractLearner
   transient public static final Logger _log = Logger.getLogger(QLambda.class);
 
   QTable _QTable = new QTable();
-  ElligibilityTraces _ET = new ElligibilityTraces();
+  EligibilityTraces _ET = new EligibilityTraces();
   double _gamma = 0.9;
   double _alpha = 0.5;
   double _lambda = 0.5;
@@ -36,8 +36,7 @@ public class QLambda extends AbstractLearner
     _ET.clear();
     env_.new_episode();
     State S = env_.getState();
-    Action A = env_.offPolicyAction(S);
-    A = env_.epsilonGreedyPolicy(_QTable, S, _epsilon);
+    Action A = env_.epsilonGreedyPolicy(_QTable, S, _epsilon);
     do
     {
       _QTable.createIfNotExist(S,A);

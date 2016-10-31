@@ -13,7 +13,7 @@ public interface QFunction
 
   void set(State s_, Action a_, double v_);
 
-  void update(double alpha_, double delta_, ElligibilityTraces et_);
+  void update(double alpha_, double delta_, EligibilityTraces et_);
 
   List<Action> argMax(Environment env_, State S_);
 }

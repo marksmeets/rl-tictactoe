@@ -14,7 +14,7 @@ public class QLambdaNN extends AbstractLearner
   transient public static final Logger _log = Logger.getLogger(QLambdaNN.class);
 
   final QFunction _QNN;
-  ElligibilityTraces _ET = new ElligibilityTraces();
+  EligibilityTraces _ET = new EligibilityTraces();
   double _gamma = 0.9;
   double _alpha = 0.5;
   double _lambda = 0.5;

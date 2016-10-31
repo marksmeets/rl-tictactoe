@@ -34,7 +34,7 @@ public class QTable implements QFunction
     return d;
   }
 
-  public void update(double alpha_, double delta_, ElligibilityTraces et_)
+  public void update(double alpha_, double delta_, EligibilityTraces et_)
   {
     for (Iterator<Pair<State,Action>> i = et_.getIterator(); i.hasNext(); )
     {
