@@ -18,7 +18,6 @@ import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
-import tutil.json.JsonConverter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -228,15 +227,15 @@ public class DoubleQNNSingleOutput implements QNN
 //    _log.info("It took " + (System.currentTimeMillis() - start) + " ms to fit()");
   }
 
-  public DoubleQNNSingleOutput copy()
-  {
-    // we can't do deepcopy on the neural net; that's why it's transient
-    DoubleQNNSingleOutput copy = JsonConverter.deepCopy(this, DoubleQNNSingleOutput.class);
-    copy._net1 = _net1.clone();
-    copy._net1.init();
-    copy._random = new Random(seed);
-    return copy;
-  }
+//  public DoubleQNNSingleOutput copy()
+//  {
+//    // we can't do deepcopy on the neural net; that's why it's transient
+//    DoubleQNNSingleOutput copy = JsonConverter.deepCopy(this, DoubleQNNSingleOutput.class);
+//    copy._net1 = _net1.clone();
+//    copy._net1.init();
+//    copy._random = new Random(seed);
+//    return copy;
+//  }
 
   public void keepTrainingData(boolean b_)
   {

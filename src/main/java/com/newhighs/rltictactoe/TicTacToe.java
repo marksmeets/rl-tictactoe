@@ -1,6 +1,6 @@
 package com.newhighs.rltictactoe;
 
-import com.newhighs.misc.TicTacToe2.Board.Cell;
+import com.newhighs.rltictactoe.Board.Cell;
 import org.apache.log4j.Logger;
 
 import java.util.List;

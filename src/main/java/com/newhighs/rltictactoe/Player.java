@@ -1,6 +1,6 @@
 package com.newhighs.rltictactoe;
 
-import com.newhighs.misc.TicTacToe2.Board.Cell;
+import com.newhighs.rltictactoe.Board.Cell;
 
 /**
  * Created by mark on 25-10-16.
