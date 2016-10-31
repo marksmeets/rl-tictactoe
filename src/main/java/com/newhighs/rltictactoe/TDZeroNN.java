@@ -43,20 +43,15 @@ public class TDZeroNN extends AbstractLearner
       // choose A' from S' using policy derived from Q (eg, epsilon-greedy)
       Action APrime = env_.epsilonGreedyPolicy(_QNN, SPrime, _epsilon);
 
-//      double oldQValue = _QNN.get(S,A);
-//      _QNN.set(S,A, oldQValue + _alpha * ( R + _gamma * _QNN.get(SPrime, APrime) - oldQValue ));
-//      if (R < 0)
-//      {
-//        _log.info("Reward " + R + " Q(S,A) before: " + oldQValue + " new: " + _QNN.get(S,A));
-//      }
-
-//      _log.info("REeward " + R + " Sprime terminal? " + SPrime.isTerminal() + " QNN(S',A') = " + _QNN.get(SPrime,APrime));
       if (SPrime.isTerminal())
       {
         _QNN.set(S, A, R );
       } else
       {
+        // when using function approximators the TD target is R + gamma * Q(S',A')
         _QNN.set(S, A, R + _gamma * _QNN.get(SPrime, APrime));
+//        double oldQValue = _QNN.get(S,A);
+//        _QNN.set(S,A, oldQValue + _alpha * ( R + _gamma * _QNN.get(SPrime, APrime) - oldQValue ));
       }
 
       S = SPrime;
@@ -73,7 +68,7 @@ public class TDZeroNN extends AbstractLearner
     PropertyConfigurator.configure(TDZeroNN.class.getClassLoader().getResource("resources/log4j.properties"));
 
     TicTacToe game = new TicTacToe( Cell.X, new RandomPlayer(Cell.O));
-    AbstractLearner qLambda = new TDZeroNN(new QNNOneHot(Board.DIM, 500));
+    AbstractLearner qLambda = new TDZeroNN(new QNNOneHot(Board.DIM));
     for (int z = 0; z < 1000000; z++)
     {
       game.resetStats();

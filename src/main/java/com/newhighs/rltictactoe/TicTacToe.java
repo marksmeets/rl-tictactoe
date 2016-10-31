@@ -3,6 +3,7 @@ package com.newhighs.rltictactoe;
 import com.newhighs.rltictactoe.Board.Cell;
 import org.apache.log4j.Logger;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -119,19 +120,7 @@ public class TicTacToe extends Environment
   @Override
   protected List<? extends Action> possibleActions(State s_)
   {
-    List<Move> list = _board.possibleMoves();
-    // filter any illegal moves (not necessary, algorithm should learn what is illegal!)
-
-//    for (Iterator<Move> iterator = list.iterator(); iterator.hasNext(); )
-//    {
-//      Move move = iterator.next();
-//      if (!_board.isLegal(move))
-//      {
-//        iterator.remove();
-//      }
-//    }
-
-    return list;
+    return _board.possibleMoves();
   }
 
 }

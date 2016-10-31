@@ -51,14 +51,8 @@ public class QNNOneHot implements QFunction
 
   transient MultiLayerNetwork _net;
 
-  List<DataSet> _replayMemory;
-
-  private int _replayMemorySize;
-
-  public QNNOneHot(int dimension_, int replayMemorySize_)
+  public QNNOneHot(int dimension_)
   {
-    _replayMemorySize = replayMemorySize_;
-
     // the network gets as input a board (size: dim*dim) plus a move (one-hot encoding of the cells in the board)
     _numInputs = dimension_ * dimension_;
     _numOutputs = dimension_ * dimension_;
@@ -67,18 +61,11 @@ public class QNNOneHot implements QFunction
     _net = new MultiLayerNetwork(conf);
     _net.init();
 
-    init();
-  }
-
-  public void init()
-  {
     _random = new Random(seed);
     _net.setListeners(new ScoreIterationListener(1000));
-    _replayMemory = new LinkedList<>();
-
-    _batchSize = Math.min(_batchSize, _replayMemorySize);
   }
 
+  // used for Lambda learners
   public void update(double alpha_, double delta_, EligibilityTraces et_)
   {
     for (Iterator<Pair<State,Action>> i = et_.getIterator(); i.hasNext(); )
@@ -100,14 +87,19 @@ public class QNNOneHot implements QFunction
     List<Action> best = new ArrayList<>();
     for (Action a : env_.possibleActions(S_))
     {
-      if ( qValue < output.getDouble(a.toNd4jArrayIndex()))
+      // uncomment the following line will make tdzeroNN/qlambdaNN work, it will never select an illegal move
+      // and this helps with the learning process. But it shouldn't be necessary!!!
+//      if (((Board)S_).isLegal((Move)a))
       {
-        best.clear();
-        best.add(a);
-        qValue = output.getDouble(a.toNd4jArrayIndex());
-      } else if ( Math.abs(qValue - output.getDouble(a.toNd4jArrayIndex())) < 0.0000001)
-      {
-        best.add(a);
+        if (qValue < output.getDouble(a.toNd4jArrayIndex()))
+        {
+          best.clear();
+          best.add(a);
+          qValue = output.getDouble(a.toNd4jArrayIndex());
+        } else if (Math.abs(qValue - output.getDouble(a.toNd4jArrayIndex())) < 0.0000001)
+        {
+          best.add(a);
+        }
       }
     }
     return best;

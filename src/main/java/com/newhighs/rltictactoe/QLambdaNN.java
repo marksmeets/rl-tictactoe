@@ -76,12 +76,13 @@ public class QLambdaNN extends AbstractLearner
   public static void main(String[] args)
   {
     PropertyConfigurator.configure(QLambdaNN.class.getClassLoader().getResource("resources/log4j.properties"));
+    // the learner is 'X'. It plays against an opponent that does legal, random moves.
     TicTacToe game = new TicTacToe( Cell.X, new RandomPlayer(Cell.O));
-    AbstractLearner qLambda = new QLambdaNN(new QNNOneHot(Board.DIM, 500));
+    AbstractLearner qLambda = new QLambdaNN(new QNNOneHot(Board.DIM));
     for (int z = 0; z < 1000000; z++)
     {
       game.resetStats();
-      for (int i = 0; i < 10; i++)
+      for (int i = 0; i < 1000; i++)
       {
         qLambda.episode(game);
       }
