@@ -13,14 +13,19 @@ public class TDZeroNN extends AbstractLearner
 {
   transient public static final Logger _log = Logger.getLogger(TDZeroNN.class);
 
-  final QNN _QNN;
+  final QFunction _QNN;
   double _gamma = 0.9;
   double _alpha = 0.5;
 
-  public TDZeroNN(QNN QNN_)
+  public TDZeroNN(QFunction QNN_)
   {
     super (0.0);
     _QNN = QNN_;
+  }
+
+  public QFunction getQFunction()
+  {
+    return _QNN;
   }
 
   public void episode(Environment env_)

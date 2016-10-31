@@ -72,23 +72,13 @@ public class ElligibilityTraces
     }
   }
 
-  public void update(double gamma_, double lambda_, List<Pair<State, Action>> traces_)
-  {
-    for (Pair<State, Action> stateAction : traces_)
-    {
-      String s = stateAction.getLeft().encode();
-      String a = stateAction.getRight().encode();
-      Map<String, Double> map = _eMap.get(s);
-      map.put(a, gamma_ * lambda_ * map.get(a));
-    }
-  }
-
   public void clear()
   {
     _eMap.clear();
     _traces.clear();
   }
 
+  // either use inc or set1 to update the elligibility traces.
   public void inc(State s_, Action a_)
   {
     _traces.add(new ImmutablePair<State, Action>(s_, a_));

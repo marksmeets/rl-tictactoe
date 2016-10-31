@@ -13,17 +13,22 @@ public class QLambdaNN extends AbstractLearner
 {
   transient public static final Logger _log = Logger.getLogger(QLambdaNN.class);
 
-  final QNN _QNN;
+  final QFunction _QNN;
   ElligibilityTraces _ET = new ElligibilityTraces();
   double _gamma = 0.9;
   double _alpha = 0.5;
   double _lambda = 0.5;
 
-  public QLambdaNN(QNN QNN_)
+  public QLambdaNN(QFunction QNN_)
   {
     super (0);
     _QNN = QNN_;
 
+  }
+
+  public QFunction getQFunction()
+  {
+    return _QNN;
   }
 
   public void episode(Environment env_)
@@ -31,12 +36,9 @@ public class QLambdaNN extends AbstractLearner
     _ET.clear();
     env_.new_episode();
     State S = env_.getState();
-    Action A = env_.offPolicyAction(S);
-    A = env_.epsilonGreedyPolicy(_QNN, S, _epsilon);
-//    List<Pair<State,Action>> traces = new ArrayList<>();
+    Action A = env_.epsilonGreedyPolicy(_QNN, S, _epsilon);
     do
     {
-//      _QTable.createIfNotExist(S,A);
 
       // take action A, observe reward R, next state S'
       Object[] rewardNextState = env_.apply(S,A);
@@ -48,11 +50,8 @@ public class QLambdaNN extends AbstractLearner
       // if APrime was the result of an exploratory move, it will be different from AStar
       Action AStar = env_.greedyPolicy(_QNN, SPrime, APrime);
 
-//      _QTable.createIfNotExist(SPrime,APrime);
-
       double delta = R + _gamma * _QNN.get(SPrime, AStar) - _QNN.get(S, A);
       _ET.inc(S,A);
-//      traces.add(new ImmutablePair<State, Action>(S,A));
 
       // for all s in S, a in A(s): update Q(s,a) := Q(s,a) + alpha*delta*E(s,a)
       _QNN.update(_alpha,delta,_ET);
@@ -65,7 +64,6 @@ public class QLambdaNN extends AbstractLearner
       } else
       {
         _ET.clear();
-//        traces.clear();
       }
 
       S = SPrime;
@@ -73,8 +71,6 @@ public class QLambdaNN extends AbstractLearner
 
 
     } while ( ! S.isTerminal() );
-//    System.out.println(S);
-//    System.out.println(_QTable);
   }
 
   public static void main(String[] args)

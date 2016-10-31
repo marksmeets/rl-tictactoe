@@ -10,4 +10,6 @@ public interface Learner
   void decrEpsilon();
 
   double getEpsilon();
+
+  QFunction getQFunction();
 }

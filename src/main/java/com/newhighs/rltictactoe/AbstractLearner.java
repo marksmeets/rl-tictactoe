@@ -11,7 +11,7 @@ public abstract class AbstractLearner implements Learner
 
   double _epsilon = 0.999;
 
-  public AbstractLearner(double epsilon_)
+  public AbstractLearner( double epsilon_)
   {
     _epsilon = epsilon_;
   }
@@ -27,4 +27,16 @@ public abstract class AbstractLearner implements Learner
   {
     return _epsilon;
   }
+
+  public void emptyBoardStats(Environment env_)
+  {
+    _log.info("Values for Q(S,A) with S is empty board: ");
+    env_.new_episode();
+    State S = env_.getState();
+    for (Action a: env_.possibleActions(S))
+    {
+      _log.info("Action " + a.encode() + " : " + getQFunction().get(S,a));
+    }
+  }
+
 }

@@ -36,7 +36,7 @@ import java.util.Set;
  * Each output gives the score with which a cell should be chosen, and we can use one hot encoding to select the
  * optimal move
  */
-public class QNNOneHot implements QNN
+public class QNNOneHot implements QFunction
 {
   transient public static final Logger _log = Logger.getLogger(QNNOneHot.class);
 
@@ -55,10 +55,8 @@ public class QNNOneHot implements QNN
   transient MultiLayerNetwork _net;
 
   List<DataSet> _replayMemory;
-  List<DataSet> _trainingData;
 
   private int _replayMemorySize;
-  protected boolean _keepTrainingData = false;
 
   public QNNOneHot(int dimension_, int replayMemorySize_)
   {
@@ -79,12 +77,8 @@ public class QNNOneHot implements QNN
   {
     _random = new Random(seed);
     _net.setListeners(new ScoreIterationListener(1000));
-//    _net.setListeners(new HistogramIterationListener(1));
     _replayMemory = new LinkedList<>();
 
-    // make sure to periodically truncate the trainingData list; otherwise you'll get out-of-memory errors
-    // AsyncQLearningActor needs this
-    _trainingData = new ArrayList<>();
     _batchSize = Math.min(_batchSize, _replayMemorySize);
   }
 
@@ -132,14 +126,6 @@ public class QNNOneHot implements QNN
   {
     ModelSerializer.writeModel(_net, filename_, true);
   }
-
-  public List<DataSet> getTrainingData()
-  {
-    List<DataSet> list = _trainingData;
-    _trainingData = new ArrayList<>();
-    return list;
-  }
-
 
   private MultiLayerConfiguration getDeepDenseLayerNetworkConfiguration()
   {
@@ -192,64 +178,7 @@ public class QNNOneHot implements QNN
     _net.fit(iterator);
     output = _net.output(input, false);
 //    _log.info("After : " + state_.encode() + " , " + action_.encode() + " -> " + qValue_ + "  ---  " + input + " -> " + output);
-    if (true)
-      return;
 
-    if (_keepTrainingData)
-    {
-      _trainingData.add(newData);
-    }
-    _replayMemory.add(newData);
-    if (_replayMemory.size() > _replayMemorySize)
-    {
-      _replayMemory.remove(0);
-    }
-    if (_replayMemory.size() < _batchSize)
-    {
-      return;
-    }
-    _counter++;
-    int threshold = _batchSize/2;
-    if (_counter < threshold)
-    {
-      return;
-    }
-    _counter = 0;
-    // add the last unseen trainingexamples to the minibatch
-    List<DataSet> unseen = _replayMemory.subList(_replayMemory.size() - threshold, _replayMemory.size()-1);
-    // get a minibatch from the replaymemory
-    List<DataSet> replayCopy = new LinkedList<>(_replayMemory);
-    Collections.shuffle(replayCopy);
-    Set<DataSet> randomBatch = new HashSet<>(replayCopy.subList(0, Math.min(replayCopy.size(), _batchSize - threshold)));
-    randomBatch.addAll(unseen);
-
-    final List<DataSet> list = new ArrayList<>(randomBatch);
-    update(list);
-  }
-
-  public void update(List<DataSet> trainingData_)
-  {
-    Collections.shuffle(trainingData_, _random);
-    DataSetIterator iterator = new ListDataSetIterator(trainingData_, _batchSize);
-
-//    long start = System.currentTimeMillis();
-    _net.fit(iterator);
-//    _log.info("It took " + (System.currentTimeMillis() - start) + " ms to fit()");
-  }
-
-//  public QNNOneHot copy()
-//  {
-//    // we can't do deepcopy on the neural net; that's why it's transient
-//    QNNOneHot copy = JsonConverter.deepCopy(this, QNNOneHot.class);
-//    copy._net = _net.clone();
-//    copy._net.init();
-//    copy._random = new Random(seed);
-//    return copy;
-//  }
-
-  public void keepTrainingData(boolean b_)
-  {
-    _keepTrainingData = b_;
   }
 
   private INDArray encode(State s_)
@@ -282,22 +211,6 @@ public class QNNOneHot implements QNN
     }
     int bestMove = bestMoves.get(_random.nextInt(bestMoves.size()));
     return new Object[]{bestMove, qValue};
-  }
-
-  public double getMaxQValue(Board from_)
-  {
-    return (double) argMaxQ(from_)[1];
-  }
-
-  public int getQMaximizer(Board from_)
-  {
-    return (int) argMaxQ(from_)[0];
-  }
-
-  public double getQValue(Board from_, int move_)
-  {
-    INDArray array = encode(from_);
-    return _net.output(array, false).getDouble(move_);
   }
 
   @Override

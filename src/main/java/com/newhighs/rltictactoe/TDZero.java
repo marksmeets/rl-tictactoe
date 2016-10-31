@@ -4,6 +4,8 @@ import com.newhighs.rltictactoe.Board.Cell;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import javax.swing.table.AbstractTableModel;
+
 /**
  * Created by mark on 25-10-16.
  *
@@ -19,9 +21,13 @@ public class TDZero extends AbstractLearner
 
   public TDZero()
   {
-    super (0.0);
+    super ( 0.0);
     _QTable = new QTable();
+  }
 
+  public QFunction getQFunction()
+  {
+    return _QTable;
   }
 
   public void episode(Environment env_)
@@ -58,17 +64,19 @@ public class TDZero extends AbstractLearner
   {
     PropertyConfigurator.configure(TDZero.class.getClassLoader().getResource("resources/log4j.properties"));
     TicTacToe game = new TicTacToe( Cell.X, new RandomPlayer(Cell.O));
-    AbstractLearner qLambda = new TDZero();
-    for (int z = 0; z < 1000000; z++)
+    AbstractLearner learner = new TDZero();
+    for (int z = 0; z < 10; z++)
     {
       game.resetStats();
       for (int i = 0; i < 1000; i++)
       {
-        qLambda.episode(game);
+        learner.episode(game);
       }
-      qLambda.decrEpsilon();
-      _log.info("Episode #" + z + " Won: " + game.won() + "\t Lost: " + game.lost() + "\t Draw: " + game.draws() + "\t illegal moves: " + game.illegals() + "\t epsilon: " + qLambda.getEpsilon());
+      learner.decrEpsilon();
+      _log.info("Episode #" + z + " Won: " + game.won() + "\t Lost: " + game.lost() + "\t Draw: " + game.draws() + "\t illegal moves: " + game.illegals() + "\t epsilon: " + learner.getEpsilon());
 //      _log.info(sarsaLambda._QTable);
     }
+    learner.emptyBoardStats(game);
+
   }
 }

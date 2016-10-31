@@ -24,6 +24,11 @@ public class Sarsa extends AbstractLearner
     _QTable = new QTable();
   }
 
+  public QFunction getQFunction()
+  {
+    return _QTable;
+  }
+
   public void episode(Environment env_)
   {
     env_.new_episode();

@@ -26,6 +26,11 @@ public class SarsaLambda extends AbstractLearner
 
   }
 
+  public QFunction getQFunction()
+  {
+    return _QTable;
+  }
+
   public void episode(Environment env_)
   {
     _ET.clear();
